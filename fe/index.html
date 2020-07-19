@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body>
+    <div id="v-app">
+        <h2>Masukkan task</h2>
+        <input type="text" placeholder="new task" v-model="newTask" />
+        <input type="submit" value="Add" @click="addTask" />
+        <h2>List Tasks</h2>
+        <ul v-for="(task, index) in tasks">
+            <li>
+                <span v-if="editId !== task.id">{{task.title}}</span>
+                <input type="text" v-model="editT" v-if="editId === task.id" />
+            </li>
+            <button @click="rmTask(task,index)">Delete</button>
+            <button v-if="editId !== task.id" @click="editTask(task)">Edit</button>
+            <button v-if="editId === task.id" @click="saveTask(task, index)">
+          Save
+        </button>
+        </ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        axios.defaults.baseURL = "http://localhost:3000";
+        axios.defaults.headers.post["Content-Type"] =
+            "application/x-www-form-urlencoded";
+
+        const app = new Vue({
+            el: "#v-app",
+            data: {
+                tasks: [],
+                newTask: null,
+                editT: "",
+                editId: true,
+            },
+            methods: {
+                listTasks: async function() {
+                    const res = await axios.get("/tasks");
+                    this.tasks = res.data;
+                },
+
+                addTask: async function() {
+                    const payload = {
+                        title: this.newTask,
+                    };
+                    const res = await axios.post("/task/add", payload);
+                    this.tasks.push({
+                        // id: this.tasks.length + 1,
+                        title: this.newTask,
+                    });
+                    this.newTask = "";
+                },
+                rmTask: async function(task, index) {
+                    const res = await axios.delete("/task/delete/" + task.id);
+                    this.tasks.splice(index, 1);
+                },
+                editTask: function(task) {
+                    this.editId = task.id;
+                    this.editT = task.title;
+                },
+                saveTask: async function(task, index) {
+                    const payload = {
+                        title: this.editT,
+                    };
+                    const res = await axios.put("/task/edit/" + task.id, payload);
+                    this.tasks[index].title = this.editT;
+                    this.editId = true;
+                },
+            },
+            mounted() {
+                this.listTasks();
+            },
+        });
+    </script>
+</body>
+
+</html>
