@@ -7,10 +7,10 @@
 
 <body>
     <div id="v-app">
-        <h2>Masukkan task</h2>
+        <h2>Masukkan Task</h2>
         <input type="text" placeholder="new task" v-model="newTask" />
         <input type="submit" value="Add" @click="addTask" />
-        <h2>List Tasks</h2>
+        <h2>Daftar Tasks</h2>
         <ul v-for="(task, index) in tasks">
             <li>
                 <span v-if="editId !== task.id">{{task.title}}</span>
