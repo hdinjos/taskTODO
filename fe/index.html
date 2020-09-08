@@ -18,9 +18,7 @@
             </li>
             <button @click="rmTask(task,index)">Delete</button>
             <button v-if="editId !== task.id" @click="editTask(task)">Edit</button>
-            <button v-if="editId === task.id" @click="saveTask(task, index)">
-          Save
-        </button>
+            <button v-if="editId === task.id" @click="saveTask(task, index)">Save</button>
         </ul>
     </div>
 
@@ -55,6 +53,7 @@
                         title: this.newTask,
                     });
                     this.newTask = "";
+				    this.listTasks();
                 },
                 rmTask: async function(task, index) {
                     const res = await axios.delete("/task/delete/" + task.id);

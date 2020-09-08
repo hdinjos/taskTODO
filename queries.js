@@ -2,7 +2,7 @@ const pool = require("./database");
 
 //get all tasks
 const listTasks = (req, res) => {
-    pool.query("SELECT * FROM tasks", (err, results) => {
+    pool.query("SELECT * FROM tasks order by id", (err, results) => {
         if (err) throw err;
         res.status(200).json(results.rows);
     });
